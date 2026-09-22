@@ -1,5 +1,8 @@
 # 실습 과제 진행
 ## 여기를 채우시오.
+from pico2d import *
+
+open_canvas(800, 600)
 
 def move_circle():
     print("circle")
@@ -17,3 +20,6 @@ while True:
     move_triangle()
 
     break
+
+
+close_canvas()
