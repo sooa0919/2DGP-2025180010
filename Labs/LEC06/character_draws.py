@@ -18,7 +18,6 @@ def draw_character(x, y):
     delay(0.01)
 
 def move_circle():
-    print("circle")
     for deg in range(0, 360, 3):
         rad = math.radians(deg)
         x = 400 + 200 * math.cos(rad)
@@ -52,7 +51,7 @@ def move_rectangle():
     draw_right()
     draw_bottom()
     draw_left()
-    print("rectangle")
+    
 
 
 def draw_leftUp():
@@ -78,7 +77,7 @@ def move_triangle():
     draw_leftUp()
     draw_rightDown()
     draw_bottomTriangle()
-    print("triangle")
+    
 
 
 while True:
