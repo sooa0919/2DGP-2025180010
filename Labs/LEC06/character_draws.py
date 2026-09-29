@@ -60,12 +60,15 @@ def move_rectangle():
 
 
 def draw_leftDown():
+    print("leftDown")
     pass
 
 def draw_bottomTriangle():
+    print("bottomTriangle")
     pass
 
 def draw_rightUp():
+    print("rightUp")
     pass
 
 
