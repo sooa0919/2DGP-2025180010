@@ -74,7 +74,9 @@ def draw_rightDown():
     pass
 
 def draw_bottomTriangle():
-        
+    print("bottomTriangle")
+    for x in range(750, 50, -5):
+        draw_character(x, 50)
     pass
 
 
