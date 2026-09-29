@@ -61,6 +61,9 @@ def move_rectangle():
 
 def draw_leftDown():
     print("leftDown")
+    for x in range(50, 400, 5):
+        y = 50 + (x - 50) * (250 / 350)
+        draw_character(x, y)
     pass
 
 def draw_bottomTriangle():
@@ -81,7 +84,7 @@ def move_triangle():
 
 while True:
     #move_circle()
-    move_rectangle()
+    #move_rectangle()
     move_triangle()
 
     break
