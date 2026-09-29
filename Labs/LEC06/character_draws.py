@@ -37,7 +37,7 @@ def draw_right():
     pass
 
 def draw_bottom():
-    for x in range(750, 50, -5):
+    for x in range(750, 50, -7):
         draw_character(x, 50)
     pass
 
