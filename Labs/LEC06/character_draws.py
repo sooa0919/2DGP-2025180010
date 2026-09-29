@@ -42,7 +42,7 @@ def draw_bottom():
     pass
 
 def draw_left():
-    for y in range(50, 550, 5):
+    for y in range(50, 550, 7):
         draw_character(50, y)
     pass
 
