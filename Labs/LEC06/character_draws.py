@@ -26,7 +26,7 @@ def move_circle():
         draw_character(x, y)
     
 def draw_top():
-    for x in range(50, 750, 5):
+    for x in range(50, 750, 7):
         draw_character(x, 550)
     pass
 
