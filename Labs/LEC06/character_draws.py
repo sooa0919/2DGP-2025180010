@@ -60,21 +60,18 @@ def move_rectangle():
 
 
 def draw_leftUp():
-    print("leftup")
     for x in range(50, 400, 5):
         y = 50 + (x - 50) * (250 / 350)
         draw_character(x, y)
     pass
 
 def draw_rightDown():
-    print("rightDown")
     for x in range(400, 750, 5):
             y = 250 - (x - 400) * (200 / 350)
             draw_character(x, y)
     pass
 
 def draw_bottomTriangle():
-    print("bottomTriangle")
     for x in range(750, 50, -5):
         draw_character(x, 50)
     pass
