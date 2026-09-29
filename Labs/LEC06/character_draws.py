@@ -66,10 +66,6 @@ def draw_leftUp():
         draw_character(x, y)
     pass
 
-def draw_bottomTriangle():
-    print("bottomTriangle")
-    pass
-
 def draw_rightDown():
     print("rightDown")
     for x in range(400, 750, 5):
@@ -77,11 +73,16 @@ def draw_rightDown():
             draw_character(x, y)
     pass
 
+def draw_bottomTriangle():
+        
+    pass
+
+
 
 def move_triangle():
     draw_leftUp()
-    draw_bottomTriangle()
     draw_rightDown()
+    draw_bottomTriangle()
     print("triangle")
 
 
