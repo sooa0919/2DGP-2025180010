@@ -33,6 +33,18 @@ def move_rectangle():
         draw_character(50, y)
 
 
+def move_triangle():
+    for x in range(50, 401, 5):
+        y = 50 + (x - 50) * (500 / 350)
+        draw_character(x, y)
+    for x in range(400, 751, 5):
+        y = 550 - (x - 400) * (500 / 350)
+        draw_character(x, y)
+    for x in range(750, 49, -5):
+        draw_character(x, 50)
+
+
 while True:
     move_circle()
     move_rectangle()
+    move_triangle()
