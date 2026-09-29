@@ -58,6 +58,17 @@ def move_rectangle():
     draw_left()
     print("rectangle")
 
+
+def draw_leftDown():
+    pass
+
+def draw_bottomTriangle():
+    pass
+
+def draw_rightUp():
+    pass
+
+
 def move_triangle():
     draw_leftDown()
     draw_bottomTriangle()
