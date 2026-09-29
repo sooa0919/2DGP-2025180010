@@ -32,7 +32,7 @@ def draw_top():
 
 
 def draw_right(): 
-    for y in range(550, 50, -5):
+    for y in range(550, 50, -7):
         draw_character(750, y)
     pass
 
