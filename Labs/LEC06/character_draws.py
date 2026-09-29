@@ -11,20 +11,26 @@ character.draw(400, 300)
 update_canvas()
 delay(1)
 
+def draw_character(x, y):
+    clear_canvas()
+    character.draw(x, y)
+    update_canvas()
+    delay(0.01)
+
 def move_circle():
     print("circle")
     for deg in range(0, 360, 5):
         rad = math.radians(deg)
         x = 400 + 200 * math.cos(rad)
         y = 300 + 200 * math.sin(rad)
-        clear_canvas()
-        character.draw(x, y)
-        update_canvas()
-        delay(0.1)
-
+        draw_character(x, y)
+    
 def draw_top():
     print("top")
+    for x in range(50, 750, 5):
+        draw_character(x, 550)
     pass
+
 
 def draw_right():
     print("right")  
@@ -51,7 +57,7 @@ def move_triangle():
 
 
 while True:
-   #  move_circle()
+    move_circle()
     move_rectangle()
     move_triangle()
 
