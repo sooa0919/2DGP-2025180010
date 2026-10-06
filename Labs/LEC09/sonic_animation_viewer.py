@@ -20,6 +20,7 @@ CANVAS_HEIGHT = 600
 FRAME_WIDTH = 40
 FRAME_DURATION = 0.1
 REPEATS_PER_ANIMATION = 5
+TRANSITION_DELAY = 1.0
 BACKGROUND_COLOR = (230, 238, 232)
 SPRITE_PATH = Path(__file__).resolve().with_name("sonic-sprite.png")
 
@@ -57,9 +58,16 @@ class PlaybackState:
     frame_index: int = 0
     elapsed: float = 0.0
     completed_cycles: int = 0
+    phase: str = "play"
+    phase_elapsed: float = 0.0
 
     def advance_time(self, delta_time, animations):
-        self.elapsed += max(0.0, delta_time)
+        delta_time = max(0.0, delta_time)
+        if self.phase == "pause":
+            self.phase_elapsed += delta_time
+            return
+
+        self.elapsed += delta_time
         while self.elapsed >= FRAME_DURATION:
             self.elapsed -= FRAME_DURATION
             animation = animations[self.animation_index]
@@ -69,14 +77,11 @@ class PlaybackState:
                 self.frame_index = 0
                 self.completed_cycles += 1
                 if self.completed_cycles >= REPEATS_PER_ANIMATION:
-                    if self.animation_index + 1 < len(animations):
-                        self.animation_index += 1
-                        self.frame_index = 0
-                        self.completed_cycles = 0
-                    else:
-                        self.frame_index = animation.frame_count - 1
-                        self.elapsed = 0.0
-                        return
+                    self.frame_index = animation.frame_count - 1
+                    self.elapsed = 0.0
+                    self.phase = "pause"
+                    self.phase_elapsed = 0.0
+                    return
 
 
 def draw_frame(sprite_sheet, animation, frame_index):
