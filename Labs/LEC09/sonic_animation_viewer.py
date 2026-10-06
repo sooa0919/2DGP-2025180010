@@ -65,6 +65,16 @@ class PlaybackState:
         delta_time = max(0.0, delta_time)
         if self.phase == "pause":
             self.phase_elapsed += delta_time
+            if (
+                self.phase_elapsed >= TRANSITION_DELAY
+                and self.animation_index + 1 < len(animations)
+            ):
+                self.animation_index += 1
+                self.frame_index = 0
+                self.elapsed = 0.0
+                self.completed_cycles = 0
+                self.phase = "play"
+                self.phase_elapsed = 0.0
             return
 
         self.elapsed += delta_time
