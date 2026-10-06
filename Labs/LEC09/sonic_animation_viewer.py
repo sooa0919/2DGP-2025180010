@@ -41,6 +41,23 @@ ANIMATIONS = (
 )
 
 
+def draw_frame(sprite_sheet, animation, frame_index):
+    if not 0 <= frame_index < animation.frame_count:
+        raise IndexError("프레임 인덱스가 애니메이션 범위를 벗어났습니다.")
+
+    source_left = frame_index * FRAME_WIDTH
+    source_width = min(FRAME_WIDTH, sprite_sheet.w - source_left)
+    source_bottom = sprite_sheet.h - animation.top - animation.height
+    sprite_sheet.clip_draw(
+        source_left,
+        source_bottom,
+        source_width,
+        animation.height,
+        source_width // 2,
+        animation.height // 2,
+    )
+
+
 def main():
     if not SPRITE_PATH.is_file():
         print(f"스프라이트 이미지를 찾을 수 없습니다: {SPRITE_PATH}")
@@ -61,6 +78,7 @@ def main():
                     running = False
 
             clear_canvas()
+            draw_frame(sprite_sheet, ANIMATIONS[0], 0)
             update_canvas()
             delay(1 / 60)
     finally:
