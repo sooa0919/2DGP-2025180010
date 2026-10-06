@@ -3,6 +3,10 @@ from pathlib import Path
 from time import perf_counter
 
 from pico2d import (
+    SDLK_LEFT,
+    SDLK_RIGHT,
+    SDL_KEYDOWN,
+    SDL_KEYUP,
     SDL_QUIT,
     clear_canvas,
     close_canvas,
@@ -101,6 +105,25 @@ class PlaybackState:
                     self.phase_elapsed = 0.0
 
 
+@dataclass
+class MovementInput:
+    left_pressed: bool = False
+    right_pressed: bool = False
+
+    def handle_event(self, event):
+        if event.type == SDL_KEYDOWN:
+            is_pressed = True
+        elif event.type == SDL_KEYUP:
+            is_pressed = False
+        else:
+            return
+
+        if event.key == SDLK_LEFT:
+            self.left_pressed = is_pressed
+        elif event.key == SDLK_RIGHT:
+            self.right_pressed = is_pressed
+
+
 def draw_frame(sprite_sheet, animation, frame_index):
     if not 0 <= frame_index < animation.frame_count:
         raise IndexError("프레임 인덱스가 애니메이션 범위를 벗어났습니다.")
@@ -156,12 +179,15 @@ def main():
             return
 
         playback = PlaybackState()
+        movement_input = MovementInput()
         previous_time = perf_counter()
         running = True
         while running:
             for event in get_events():
                 if event.type == SDL_QUIT:
                     running = False
+                else:
+                    movement_input.handle_event(event)
 
             current_time = perf_counter()
             delta_time = current_time - previous_time
