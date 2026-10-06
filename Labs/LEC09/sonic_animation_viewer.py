@@ -1,5 +1,6 @@
 from dataclasses import dataclass
 from pathlib import Path
+from time import perf_counter
 
 from pico2d import (
     SDL_QUIT,
@@ -17,6 +18,7 @@ from pico2d import (
 CANVAS_WIDTH = 800
 CANVAS_HEIGHT = 600
 FRAME_WIDTH = 40
+FRAME_DURATION = 0.1
 BACKGROUND_COLOR = (230, 238, 232)
 SPRITE_PATH = Path(__file__).resolve().with_name("sonic-sprite.png")
 
@@ -52,6 +54,14 @@ SPRITE_SCALE = min(
 class PlaybackState:
     animation_index: int = 0
     frame_index: int = 0
+    elapsed: float = 0.0
+
+    def advance_time(self, delta_time, animation):
+        self.elapsed += max(0.0, delta_time)
+        while self.elapsed >= FRAME_DURATION:
+            self.elapsed -= FRAME_DURATION
+            if self.frame_index < animation.frame_count - 1:
+                self.frame_index += 1
 
 
 def draw_frame(sprite_sheet, animation, frame_index):
@@ -87,11 +97,18 @@ def main():
             return
 
         playback = PlaybackState()
+        previous_time = perf_counter()
         running = True
         while running:
             for event in get_events():
                 if event.type == SDL_QUIT:
                     running = False
+
+            current_time = perf_counter()
+            delta_time = current_time - previous_time
+            previous_time = current_time
+            animation = ANIMATIONS[playback.animation_index]
+            playback.advance_time(delta_time, animation)
 
             clear_canvas()
             draw_rectangle(
@@ -102,7 +119,6 @@ def main():
                 *BACKGROUND_COLOR,
                 filled=True,
             )
-            animation = ANIMATIONS[playback.animation_index]
             draw_frame(sprite_sheet, animation, playback.frame_index)
             update_canvas()
             delay(1 / 60)
