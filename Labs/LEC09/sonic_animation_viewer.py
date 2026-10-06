@@ -1,3 +1,4 @@
+from dataclasses import dataclass
 from pathlib import Path
 
 from pico2d import (
@@ -14,7 +15,30 @@ from pico2d import (
 
 CANVAS_WIDTH = 800
 CANVAS_HEIGHT = 600
+FRAME_WIDTH = 40
 SPRITE_PATH = Path(__file__).resolve().with_name("sonic-sprite.png")
+
+
+@dataclass(frozen=True)
+class AnimationStrip:
+    name: str
+    top: int
+    height: int
+    frame_count: int
+
+
+ANIMATIONS = (
+    AnimationStrip("동작 01", 39, 39, 9),
+    AnimationStrip("동작 02", 79, 39, 10),
+    AnimationStrip("동작 03", 121, 43, 7),
+    AnimationStrip("동작 04", 167, 33, 8),
+    AnimationStrip("동작 05", 206, 27, 5),
+    AnimationStrip("동작 06", 238, 36, 6),
+    AnimationStrip("동작 07", 283, 35, 7),
+    AnimationStrip("동작 08", 326, 45, 7),
+    AnimationStrip("동작 09", 377, 40, 7),
+    AnimationStrip("동작 10", 426, 43, 4),
+)
 
 
 def main():
