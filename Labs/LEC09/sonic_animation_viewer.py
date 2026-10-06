@@ -47,6 +47,7 @@ class AnimationStrip:
     name: str
     frames: tuple[SpriteFrame, ...]
     moves_with_input: bool = False
+    moves_left_to_right: bool = False
 
     @property
     def frame_count(self):
@@ -57,7 +58,7 @@ class AnimationStrip:
         return max(frame.height for frame in self.frames)
 
 
-ANIMATIONS = (
+SPRITE_ROWS = (
     AnimationStrip(
         "걷기",
         (
@@ -91,6 +92,7 @@ ANIMATIONS = (
             frame_from_bounds(334, 80, 365, 115),
             frame_from_bounds(370, 79, 398, 116),
         ),
+        True,
         True,
     ),
     AnimationStrip(
@@ -139,6 +141,7 @@ ANIMATIONS = (
             frame_from_bounds(149, 239, 178, 273),
             frame_from_bounds(186, 238, 216, 273),
         ),
+        moves_left_to_right=True,
     ),
     AnimationStrip(
         "동작 07",
@@ -150,6 +153,7 @@ ANIMATIONS = (
             frame_from_bounds(172, 286, 210, 316),
             frame_from_bounds(218, 285, 255, 316),
         ),
+        moves_left_to_right=True,
     ),
     AnimationStrip(
         "동작 08",
@@ -186,6 +190,24 @@ ANIMATIONS = (
             frame_from_bounds(125, 427, 147, 465),
         ),
     ),
+)
+
+ANIMATIONS = (
+    SPRITE_ROWS[0],
+    SPRITE_ROWS[1],
+    SPRITE_ROWS[2],
+    AnimationStrip(
+        "동작 04-05",
+        SPRITE_ROWS[3].frames + SPRITE_ROWS[4].frames,
+        moves_left_to_right=True,
+    ),
+    SPRITE_ROWS[5],
+    SPRITE_ROWS[6],
+    AnimationStrip("동작 08-A", SPRITE_ROWS[7].frames[:6]),
+    AnimationStrip("동작 08-B", SPRITE_ROWS[7].frames[6:]),
+    SPRITE_ROWS[8],
+    AnimationStrip("동작 10-A", SPRITE_ROWS[9].frames[:2]),
+    AnimationStrip("동작 10-B", SPRITE_ROWS[9].frames[2:]),
 )
 VIEWER_PADDING = 40
 MAX_FRAME_WIDTH = max(frame.width for item in ANIMATIONS for frame in item.frames)
@@ -247,6 +269,17 @@ class PlaybackState:
                     self.phase_elapsed = 0.0
         return locomotion_time
 
+    def animation_progress(self, animations):
+        if self.phase == "pause":
+            return 1.0
+
+        animation = animations[self.animation_index]
+        elapsed = (
+            self.completed_cycles * animation.frame_count + self.frame_index
+        ) * FRAME_DURATION + self.elapsed
+        duration = animation.frame_count * FRAME_DURATION * REPEATS_PER_ANIMATION
+        return min(1.0, max(0.0, elapsed / duration))
+
 
 @dataclass
 class MovementInput:
@@ -271,15 +304,35 @@ class MovementInput:
 class MovementState:
     x: float = CANVAS_WIDTH / 2
     facing_left: bool = False
+    auto_animation_name: str | None = None
+    manual_offset: float = 0.0
 
-    def update(self, delta_time, movement_input, movement_enabled):
+    def update(self, delta_time, movement_input, animation, animation_progress):
         direction = int(movement_input.right_pressed) - int(movement_input.left_pressed)
-        if movement_enabled:
-            self.x += direction * MOVEMENT_SPEED * max(0.0, delta_time)
+        half_width = MAX_FRAME_WIDTH * SPRITE_SCALE / 2
+        left_boundary = half_width
+        right_boundary = CANVAS_WIDTH - half_width
+
+        if animation.moves_left_to_right:
+            if self.auto_animation_name != animation.name:
+                self.manual_offset = 0.0
+            self.auto_animation_name = animation.name
+            travel_distance = right_boundary - left_boundary
+            self.x = left_boundary + travel_distance * animation_progress + self.manual_offset
+            self.facing_left = False
+        else:
+            self.auto_animation_name = None
+            self.manual_offset = 0.0
+
+        if animation.moves_with_input and delta_time > 0.0:
+            manual_distance = direction * MOVEMENT_SPEED * delta_time
+            self.x += manual_distance
+            if animation.moves_left_to_right:
+                self.manual_offset += manual_distance
             if direction:
                 self.facing_left = direction < 0
-        half_width = MAX_FRAME_WIDTH * SPRITE_SCALE / 2
-        self.x = min(max(self.x, half_width), CANVAS_WIDTH - half_width)
+
+        self.x = min(max(self.x, left_boundary), right_boundary)
 
 
 def draw_frame(
@@ -362,10 +415,12 @@ def main():
             previous_time = current_time
             locomotion_time = playback.advance_time(delta_time, ANIMATIONS)
             animation = ANIMATIONS[playback.animation_index]
+            animation_progress = playback.animation_progress(ANIMATIONS)
             movement.update(
                 locomotion_time,
                 movement_input,
-                locomotion_time > 0.0,
+                animation,
+                animation_progress,
             )
 
             clear_canvas()
