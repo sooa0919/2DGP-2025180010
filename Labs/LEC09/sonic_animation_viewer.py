@@ -39,6 +39,11 @@ ANIMATIONS = (
     AnimationStrip("동작 09", 377, 40, 7),
     AnimationStrip("동작 10", 426, 43, 4),
 )
+VIEWER_PADDING = 40
+SPRITE_SCALE = min(
+    (CANVAS_WIDTH - 2 * VIEWER_PADDING) // FRAME_WIDTH,
+    (CANVAS_HEIGHT - 2 * VIEWER_PADDING) // max(item.height for item in ANIMATIONS),
+)
 
 
 def draw_frame(sprite_sheet, animation, frame_index):
@@ -55,8 +60,8 @@ def draw_frame(sprite_sheet, animation, frame_index):
         animation.height,
         CANVAS_WIDTH // 2,
         CANVAS_HEIGHT // 2,
-        source_width,
-        animation.height,
+        source_width * SPRITE_SCALE,
+        animation.height * SPRITE_SCALE,
     )
 
 
