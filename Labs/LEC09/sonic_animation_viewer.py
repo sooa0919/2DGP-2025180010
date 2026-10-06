@@ -62,22 +62,33 @@ class PlaybackState:
     phase_elapsed: float = 0.0
 
     def advance_time(self, delta_time, animations):
-        delta_time = max(0.0, delta_time)
-        if self.phase == "pause":
-            self.phase_elapsed += delta_time
-            if self.phase_elapsed >= TRANSITION_DELAY:
+        remaining_time = max(0.0, delta_time)
+        while remaining_time > 0.0:
+            if self.phase == "pause":
+                pause_remaining = TRANSITION_DELAY - self.phase_elapsed
+                consumed_time = min(remaining_time, pause_remaining)
+                self.phase_elapsed += consumed_time
+                remaining_time -= consumed_time
+                if self.phase_elapsed < TRANSITION_DELAY:
+                    break
+
                 self.animation_index = (self.animation_index + 1) % len(animations)
                 self.frame_index = 0
                 self.elapsed = 0.0
                 self.completed_cycles = 0
                 self.phase = "play"
                 self.phase_elapsed = 0.0
-            return
+                continue
 
-        self.elapsed += delta_time
-        while self.elapsed >= FRAME_DURATION:
-            self.elapsed -= FRAME_DURATION
             animation = animations[self.animation_index]
+            frame_remaining = FRAME_DURATION - self.elapsed
+            consumed_time = min(remaining_time, frame_remaining)
+            self.elapsed += consumed_time
+            remaining_time -= consumed_time
+            if self.elapsed < FRAME_DURATION:
+                break
+
+            self.elapsed = 0.0
             if self.frame_index < animation.frame_count - 1:
                 self.frame_index += 1
             else:
@@ -85,10 +96,8 @@ class PlaybackState:
                 self.completed_cycles += 1
                 if self.completed_cycles >= REPEATS_PER_ANIMATION:
                     self.frame_index = animation.frame_count - 1
-                    self.elapsed = 0.0
                     self.phase = "pause"
                     self.phase_elapsed = 0.0
-                    return
 
 
 def draw_frame(sprite_sheet, animation, frame_index):
