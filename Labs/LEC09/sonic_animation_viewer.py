@@ -128,26 +128,38 @@ class MovementInput:
 @dataclass
 class MovementState:
     x: float = CANVAS_WIDTH / 2
+    facing_left: bool = False
 
-    def update(self, delta_time, movement_input):
+    def update(self, delta_time, movement_input, animation):
         direction = int(movement_input.right_pressed) - int(movement_input.left_pressed)
-        self.x += direction * MOVEMENT_SPEED * max(0.0, delta_time)
+        if animation.moves_with_input:
+            self.x += direction * MOVEMENT_SPEED * max(0.0, delta_time)
+            if direction:
+                self.facing_left = direction < 0
         half_width = FRAME_WIDTH * SPRITE_SCALE / 2
         self.x = min(max(self.x, half_width), CANVAS_WIDTH - half_width)
 
 
-def draw_frame(sprite_sheet, animation, frame_index, center_x=CANVAS_WIDTH // 2):
+def draw_frame(
+    sprite_sheet,
+    animation,
+    frame_index,
+    center_x=CANVAS_WIDTH // 2,
+    facing_left=False,
+):
     if not 0 <= frame_index < animation.frame_count:
         raise IndexError("프레임 인덱스가 애니메이션 범위를 벗어났습니다.")
 
     source_left = frame_index * FRAME_WIDTH
     source_width = min(FRAME_WIDTH, sprite_sheet.w - source_left)
     source_bottom = sprite_sheet.h - animation.top - animation.height
-    sprite_sheet.clip_draw(
+    sprite_sheet.clip_composite_draw(
         source_left,
         source_bottom,
         source_width,
         animation.height,
+        0.0,
+        "h" if facing_left else "",
         center_x,
         CANVAS_HEIGHT // 2,
         source_width * SPRITE_SCALE,
@@ -207,7 +219,7 @@ def main():
             previous_time = current_time
             playback.advance_time(delta_time, ANIMATIONS)
             animation = ANIMATIONS[playback.animation_index]
-            movement.update(delta_time, movement_input)
+            movement.update(delta_time, movement_input, animation)
 
             clear_canvas()
             draw_rectangle(
@@ -218,7 +230,13 @@ def main():
                 *BACKGROUND_COLOR,
                 filled=True,
             )
-            draw_frame(sprite_sheet, animation, playback.frame_index, movement.x)
+            draw_frame(
+                sprite_sheet,
+                animation,
+                playback.frame_index,
+                movement.x,
+                movement.facing_left,
+            )
             update_canvas()
             delay(1 / 60)
     finally:
