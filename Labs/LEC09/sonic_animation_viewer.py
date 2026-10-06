@@ -31,11 +31,12 @@ class AnimationStrip:
     top: int
     height: int
     frame_count: int
+    moves_with_input: bool = False
 
 
 ANIMATIONS = (
-    AnimationStrip("동작 01", 39, 39, 9),
-    AnimationStrip("동작 02", 79, 39, 10),
+    AnimationStrip("걷기", 39, 39, 9, True),
+    AnimationStrip("달리기", 79, 39, 10, True),
     AnimationStrip("동작 03", 121, 43, 7),
     AnimationStrip("동작 04", 167, 33, 8),
     AnimationStrip("동작 05", 206, 27, 5),
