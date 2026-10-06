@@ -22,6 +22,7 @@ from pico2d import (
 CANVAS_WIDTH = 800
 CANVAS_HEIGHT = 600
 FRAME_WIDTH = 40
+GROUND_Y = 60
 FRAME_DURATION = 0.1
 REPEATS_PER_ANIMATION = 5
 TRANSITION_DELAY = 1.0
@@ -289,6 +290,8 @@ def draw_frame(
 
     frame = animation.frames[frame_index]
     source_bottom = sprite_sheet.h - frame.top - frame.height
+    draw_width = frame.width * SPRITE_SCALE
+    draw_height = frame.height * SPRITE_SCALE
     sprite_sheet.clip_composite_draw(
         frame.left,
         source_bottom,
@@ -297,9 +300,9 @@ def draw_frame(
         0.0,
         "h" if facing_left else "",
         center_x,
-        CANVAS_HEIGHT // 2,
-        frame.width * SPRITE_SCALE,
-        frame.height * SPRITE_SCALE,
+        GROUND_Y + draw_height / 2,
+        draw_width,
+        draw_height,
     )
 
 
