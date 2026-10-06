@@ -25,6 +25,7 @@ FRAME_WIDTH = 40
 FRAME_DURATION = 0.1
 REPEATS_PER_ANIMATION = 5
 TRANSITION_DELAY = 1.0
+MOVEMENT_SPEED = 240.0
 BACKGROUND_COLOR = (230, 238, 232)
 SPRITE_PATH = Path(__file__).resolve().with_name("sonic-sprite.png")
 
@@ -124,7 +125,16 @@ class MovementInput:
             self.right_pressed = is_pressed
 
 
-def draw_frame(sprite_sheet, animation, frame_index):
+@dataclass
+class MovementState:
+    x: float = CANVAS_WIDTH / 2
+
+    def update(self, delta_time, movement_input):
+        direction = int(movement_input.right_pressed) - int(movement_input.left_pressed)
+        self.x += direction * MOVEMENT_SPEED * max(0.0, delta_time)
+
+
+def draw_frame(sprite_sheet, animation, frame_index, center_x=CANVAS_WIDTH // 2):
     if not 0 <= frame_index < animation.frame_count:
         raise IndexError("프레임 인덱스가 애니메이션 범위를 벗어났습니다.")
 
@@ -136,7 +146,7 @@ def draw_frame(sprite_sheet, animation, frame_index):
         source_bottom,
         source_width,
         animation.height,
-        CANVAS_WIDTH // 2,
+        center_x,
         CANVAS_HEIGHT // 2,
         source_width * SPRITE_SCALE,
         animation.height * SPRITE_SCALE,
@@ -180,6 +190,7 @@ def main():
 
         playback = PlaybackState()
         movement_input = MovementInput()
+        movement = MovementState()
         previous_time = perf_counter()
         running = True
         while running:
@@ -194,6 +205,7 @@ def main():
             previous_time = current_time
             playback.advance_time(delta_time, ANIMATIONS)
             animation = ANIMATIONS[playback.animation_index]
+            movement.update(delta_time, movement_input)
 
             clear_canvas()
             draw_rectangle(
@@ -204,7 +216,7 @@ def main():
                 *BACKGROUND_COLOR,
                 filled=True,
             )
-            draw_frame(sprite_sheet, animation, playback.frame_index)
+            draw_frame(sprite_sheet, animation, playback.frame_index, movement.x)
             update_canvas()
             delay(1 / 60)
     finally:
