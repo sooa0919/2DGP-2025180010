@@ -132,6 +132,8 @@ class MovementState:
     def update(self, delta_time, movement_input):
         direction = int(movement_input.right_pressed) - int(movement_input.left_pressed)
         self.x += direction * MOVEMENT_SPEED * max(0.0, delta_time)
+        half_width = FRAME_WIDTH * SPRITE_SCALE / 2
+        self.x = min(max(self.x, half_width), CANVAS_WIDTH - half_width)
 
 
 def draw_frame(sprite_sheet, animation, frame_index, center_x=CANVAS_WIDTH // 2):
