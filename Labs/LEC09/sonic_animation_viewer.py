@@ -110,6 +110,22 @@ def draw_frame(sprite_sheet, animation, frame_index):
     )
 
 
+def validate_animation_map(sprite_sheet, animations=ANIMATIONS):
+    if not animations:
+        raise ValueError("재생할 애니메이션이 없습니다.")
+
+    for animation in animations:
+        if animation.top < 0 or animation.height <= 0:
+            raise ValueError(f"{animation.name}의 세로 범위가 올바르지 않습니다.")
+        if animation.top + animation.height > sprite_sheet.h:
+            raise ValueError(f"{animation.name}의 프레임이 이미지 높이를 벗어납니다.")
+        if animation.frame_count <= 0:
+            raise ValueError(f"{animation.name}의 프레임 수가 올바르지 않습니다.")
+        last_frame_left = (animation.frame_count - 1) * FRAME_WIDTH
+        if last_frame_left >= sprite_sheet.w:
+            raise ValueError(f"{animation.name}의 프레임이 이미지 너비를 벗어납니다.")
+
+
 def main():
     if not SPRITE_PATH.is_file():
         print(f"스프라이트 이미지를 찾을 수 없습니다: {SPRITE_PATH}")
@@ -121,6 +137,12 @@ def main():
             sprite_sheet = load_image(str(SPRITE_PATH))
         except Exception as error:
             print(f"스프라이트 이미지를 불러오지 못했습니다: {error}")
+            return
+
+        try:
+            validate_animation_map(sprite_sheet)
+        except ValueError as error:
+            print(f"애니메이션 프레임 구성이 올바르지 않습니다: {error}")
             return
 
         playback = PlaybackState()
