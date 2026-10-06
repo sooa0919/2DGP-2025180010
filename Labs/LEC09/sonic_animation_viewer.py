@@ -48,6 +48,12 @@ SPRITE_SCALE = min(
 )
 
 
+@dataclass
+class PlaybackState:
+    animation_index: int = 0
+    frame_index: int = 0
+
+
 def draw_frame(sprite_sheet, animation, frame_index):
     if not 0 <= frame_index < animation.frame_count:
         raise IndexError("프레임 인덱스가 애니메이션 범위를 벗어났습니다.")
@@ -80,6 +86,7 @@ def main():
             print(f"스프라이트 이미지를 불러오지 못했습니다: {error}")
             return
 
+        playback = PlaybackState()
         running = True
         while running:
             for event in get_events():
@@ -95,7 +102,8 @@ def main():
                 *BACKGROUND_COLOR,
                 filled=True,
             )
-            draw_frame(sprite_sheet, ANIMATIONS[0], 0)
+            animation = ANIMATIONS[playback.animation_index]
+            draw_frame(sprite_sheet, animation, playback.frame_index)
             update_canvas()
             delay(1 / 60)
     finally:
