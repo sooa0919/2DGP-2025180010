@@ -207,6 +207,7 @@ class PlaybackState:
 
     def advance_time(self, delta_time, animations):
         remaining_time = max(0.0, delta_time)
+        locomotion_time = 0.0
         while remaining_time > 0.0:
             if self.phase == "pause":
                 pause_remaining = TRANSITION_DELAY - self.phase_elapsed
@@ -229,6 +230,8 @@ class PlaybackState:
             consumed_time = min(remaining_time, frame_remaining)
             self.elapsed += consumed_time
             remaining_time -= consumed_time
+            if animation.moves_with_input:
+                locomotion_time += consumed_time
             if self.elapsed < FRAME_DURATION:
                 break
 
@@ -242,6 +245,7 @@ class PlaybackState:
                     self.frame_index = animation.frame_count - 1
                     self.phase = "pause"
                     self.phase_elapsed = 0.0
+        return locomotion_time
 
 
 @dataclass
@@ -268,9 +272,9 @@ class MovementState:
     x: float = CANVAS_WIDTH / 2
     facing_left: bool = False
 
-    def update(self, delta_time, movement_input, animation):
+    def update(self, delta_time, movement_input, movement_enabled):
         direction = int(movement_input.right_pressed) - int(movement_input.left_pressed)
-        if animation.moves_with_input:
+        if movement_enabled:
             self.x += direction * MOVEMENT_SPEED * max(0.0, delta_time)
             if direction:
                 self.facing_left = direction < 0
@@ -356,9 +360,13 @@ def main():
             current_time = perf_counter()
             delta_time = current_time - previous_time
             previous_time = current_time
-            playback.advance_time(delta_time, ANIMATIONS)
+            locomotion_time = playback.advance_time(delta_time, ANIMATIONS)
             animation = ANIMATIONS[playback.animation_index]
-            movement.update(delta_time, movement_input, animation)
+            movement.update(
+                locomotion_time,
+                movement_input,
+                locomotion_time > 0.0,
+            )
 
             clear_canvas()
             draw_rectangle(
