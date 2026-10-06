@@ -1,3 +1,5 @@
+from pathlib import Path
+
 from pico2d import (
     SDL_QUIT,
     clear_canvas,
@@ -11,6 +13,7 @@ from pico2d import (
 
 CANVAS_WIDTH = 800
 CANVAS_HEIGHT = 600
+SPRITE_PATH = Path(__file__).resolve().with_name("sonic-sprite.png")
 
 
 def main():
