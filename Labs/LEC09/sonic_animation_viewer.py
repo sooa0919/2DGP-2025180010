@@ -6,6 +6,7 @@ from pico2d import (
     clear_canvas,
     close_canvas,
     delay,
+    draw_rectangle,
     get_events,
     load_image,
     open_canvas,
@@ -16,6 +17,7 @@ from pico2d import (
 CANVAS_WIDTH = 800
 CANVAS_HEIGHT = 600
 FRAME_WIDTH = 40
+BACKGROUND_COLOR = (230, 238, 232)
 SPRITE_PATH = Path(__file__).resolve().with_name("sonic-sprite.png")
 
 
@@ -85,6 +87,14 @@ def main():
                     running = False
 
             clear_canvas()
+            draw_rectangle(
+                0,
+                0,
+                CANVAS_WIDTH - 1,
+                CANVAS_HEIGHT - 1,
+                *BACKGROUND_COLOR,
+                filled=True,
+            )
             draw_frame(sprite_sheet, ANIMATIONS[0], 0)
             update_canvas()
             delay(1 / 60)
