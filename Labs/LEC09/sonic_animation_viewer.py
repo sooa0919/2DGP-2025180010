@@ -55,6 +55,7 @@ class PlaybackState:
     animation_index: int = 0
     frame_index: int = 0
     elapsed: float = 0.0
+    completed_cycles: int = 0
 
     def advance_time(self, delta_time, animation):
         self.elapsed += max(0.0, delta_time)
@@ -64,6 +65,7 @@ class PlaybackState:
                 self.frame_index += 1
             else:
                 self.frame_index = 0
+                self.completed_cycles += 1
 
 
 def draw_frame(sprite_sheet, animation, frame_index):
