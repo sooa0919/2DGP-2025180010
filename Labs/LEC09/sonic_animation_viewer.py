@@ -21,7 +21,6 @@ from pico2d import (
 
 CANVAS_WIDTH = 1400
 CANVAS_HEIGHT = 700
-FRAME_WIDTH = 40
 GROUND_Y = 60
 FRAME_DURATION = 0.1
 REPEATS_PER_ANIMATION = 5
@@ -189,10 +188,11 @@ ANIMATIONS = (
     ),
 )
 VIEWER_PADDING = 40
+MAX_FRAME_WIDTH = max(frame.width for item in ANIMATIONS for frame in item.frames)
+MAX_FRAME_HEIGHT = max(frame.height for item in ANIMATIONS for frame in item.frames)
 SPRITE_SCALE = min(
-    (CANVAS_WIDTH - 2 * VIEWER_PADDING)
-    // max(frame.width for item in ANIMATIONS for frame in item.frames),
-    (CANVAS_HEIGHT - 2 * VIEWER_PADDING) // max(item.height for item in ANIMATIONS),
+    (CANVAS_WIDTH - 2 * VIEWER_PADDING) // MAX_FRAME_WIDTH,
+    (CANVAS_HEIGHT - 2 * VIEWER_PADDING) // MAX_FRAME_HEIGHT,
 )
 
 
@@ -274,7 +274,7 @@ class MovementState:
             self.x += direction * MOVEMENT_SPEED * max(0.0, delta_time)
             if direction:
                 self.facing_left = direction < 0
-        half_width = FRAME_WIDTH * SPRITE_SCALE / 2
+        half_width = MAX_FRAME_WIDTH * SPRITE_SCALE / 2
         self.x = min(max(self.x, half_width), CANVAS_WIDTH - half_width)
 
 
