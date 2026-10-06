@@ -53,8 +53,10 @@ def draw_frame(sprite_sheet, animation, frame_index):
         source_bottom,
         source_width,
         animation.height,
-        source_width // 2,
-        animation.height // 2,
+        CANVAS_WIDTH // 2,
+        CANVAS_HEIGHT // 2,
+        source_width,
+        animation.height,
     )
 
 
