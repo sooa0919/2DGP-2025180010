@@ -62,6 +62,8 @@ class PlaybackState:
             self.elapsed -= FRAME_DURATION
             if self.frame_index < animation.frame_count - 1:
                 self.frame_index += 1
+            else:
+                self.frame_index = 0
 
 
 def draw_frame(sprite_sheet, animation, frame_index):
