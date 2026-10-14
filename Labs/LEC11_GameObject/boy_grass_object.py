@@ -49,7 +49,7 @@ class Bulloon:
         self.image2 = load_image('ball41x41.png')
 
     def update(self):
-        self.y += 5
+        self.y += random.randint(2, 10)
 
     def draw(self):
         #self.image1.clip_draw(self.frame*21, 0, 21, 21, self.x, self.y)
