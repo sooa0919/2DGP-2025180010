@@ -52,6 +52,8 @@ class Bulloon1:
         if self.y <= 600:
             self.y += random.randint(2, 10)
 
+        
+
     def draw(self):
         self.image.clip_draw(self.frame*21, 0, 21, 21, self.x, self.y)
 
@@ -63,7 +65,8 @@ class Bulloon2:
         self.image = load_image('ball41x41.png')
 
     def update(self):
-        self.y += random.randint(2, 10)
+        if self.y <= 600:
+            self.y += random.randint(2, 10)
 
     def draw(self):
         self.image.clip_draw(self.frame*41, 0, 41, 41, self.x, self.y)
