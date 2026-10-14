@@ -51,6 +51,8 @@ class Bulloon1:
     def update(self):
         if self.y <= 600:
             self.y += random.randint(2, 10)
+        else:
+            self.y -= 10
 
         
 
@@ -67,6 +69,8 @@ class Bulloon2:
     def update(self):
         if self.y <= 600:
             self.y += random.randint(2, 10)
+        else:
+            self.y -= 10
 
     def draw(self):
         self.image.clip_draw(self.frame*41, 0, 41, 41, self.x, self.y)
