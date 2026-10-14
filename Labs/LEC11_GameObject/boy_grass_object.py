@@ -81,8 +81,8 @@ def reset_world():
     zombie = Zombie()
     world.append(zombie)
 
-    bulloon = Bulloon()
-    world.append(bulloon)
+    bulloon = [Bulloon() for i in range(20)]
+    world += bulloon
     
 def update_world():
     for o in world:
