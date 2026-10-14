@@ -45,13 +45,15 @@ class Bulloon:
     def __init__(self):
         self.x, self.y =random.randint(100, 700), 90
         self.frame = 0
-        self.image = load_image('ball21x21.png')
+        #self.image1 = load_image('ball21x21.png')
+        self.image2 = load_image('ball41x41.png')
 
     def update(self):
         self.y += 5
 
     def draw(self):
-        self.image.clip_draw(self.frame*21, 0, 21, 21, self.x, self.y)
+        #self.image1.clip_draw(self.frame*21, 0, 21, 21, self.x, self.y)
+        self.image2.clip_draw(self.frame*41, 0, 41, 41, self.x, self.y)
 
 def handle_events():
     global running
