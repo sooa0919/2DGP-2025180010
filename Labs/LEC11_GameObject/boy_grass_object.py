@@ -45,6 +45,7 @@ class Bulloon:
     def __init__ (self):
             self.x = random.randint(50, 750), 90
             self.y = 0
+            self.image = load_image('ball21x21.png')
 
 def handle_events():
     global running
