@@ -43,9 +43,15 @@ class Zombie:
 
 class Bulloon:
     def __init__ (self):
-            self.x = random.randint(50, 750), 90
-            self.y = 0
-            self.image = load_image('ball21x21.png')
+        self.x = random.randint(50, 750), 90
+        self.y = 0
+        self.image = load_image('ball21x21.png')
+
+    def update(self):
+        pass
+
+    def draw(self):
+        pass
 
 def handle_events():
     global running
