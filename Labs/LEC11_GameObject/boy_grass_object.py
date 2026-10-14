@@ -95,8 +95,11 @@ def reset_world():
     zombie = Zombie()
     world.append(zombie)
 
-    bulloon = [Bulloon1() for i in range(20)]
-    world += bulloon
+    rand = random.randint(1, 20)
+    bulloon1 = [Bulloon1() for i in range(20 - rand)]
+    world += bulloon1
+    bulloon2 = [Bulloon2() for i in range(rand)]
+    world += bulloon2
     
 def update_world():
     for o in world:
