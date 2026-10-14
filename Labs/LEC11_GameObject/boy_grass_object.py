@@ -41,19 +41,32 @@ class Zombie:
         self.image.clip_draw(self.frame * frame_width, 0, frame_width, frame_height,
                             self.x, self.y, frame_width // 2, frame_height // 2)   
 
-class Bulloon:
+class Bulloon1:
     def __init__(self):
-        self.x, self.y =random.randint(100, 700), 90
+        self.x =random.randint(100, 700), 90
+        self.y = 0
         self.frame = 0
-        #self.image1 = load_image('ball21x21.png')
-        self.image2 = load_image('ball41x41.png')
+        self.image = load_image('ball21x21.png')
 
     def update(self):
         self.y += random.randint(2, 10)
 
     def draw(self):
-        #self.image1.clip_draw(self.frame*21, 0, 21, 21, self.x, self.y)
-        self.image2.clip_draw(self.frame*41, 0, 41, 41, self.x, self.y)
+        self.image.clip_draw(self.frame*21, 0, 21, 21, self.x, self.y)
+
+class Bulloon2:
+    def __init__ (self):
+        self.x =random.randint(100, 700), 90
+        self.y = 0
+        self.frame = 0
+        self.image = load_image('ball41x41.png')
+
+    def update(self):
+        self.y += random.randint(2, 10)
+
+    def draw(self):
+        self.image.clip_draw(self.frame*21, 0, 21, 21, self.x, self.y)
+        
 
 def handle_events():
     global running
@@ -81,8 +94,8 @@ def reset_world():
     zombie = Zombie()
     world.append(zombie)
 
-    bulloon = [Bulloon() for i in range(20)]
-    world += bulloon
+    #bulloon = [Bulloon() for i in range(20)]
+    #world += bulloon
     
 def update_world():
     for o in world:
