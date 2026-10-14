@@ -36,10 +36,10 @@ class Zombie:
         self.x += 5
 
     def draw(self):
-        frame_width = self.image.w // 10
+        frame_width = self.image.w // 10 
         frame_height = self.image.h
         self.image.clip_draw(self.frame * frame_width, 0, frame_width, frame_height,
-                            self.x, self.y, frame_width // 2, frame_height // 2)
+                            self.x, self.y, frame_width // 2, frame_height // 2)   
 
 class Bulloon:
     def __init__(self):
@@ -48,11 +48,10 @@ class Bulloon:
         self.image = load_image('ball21x21.png')
 
     def update(self):
-        self.frame = (self.frame + 1) % 8
         self.y += 5
 
     def draw(self):
-        self.image.clip_draw(self.frame * 100, 0, 100, 100, self.x, self.y)
+        self.image.clip_draw(self.frame*21, 0, 21, 21, self.x, self.y)
 
 def handle_events():
     global running
